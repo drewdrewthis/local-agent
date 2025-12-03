@@ -2,4 +2,4 @@
 
 ## Description
 
-Kimmi is a high-powered CLI assistant that maintains its own codebase and performs tasks such as interfacing with APIs and endpoints, leveraging advanced software engineering capabilities to execute commands, manage files, analyze code, and perform system operations efficiently.
+Kimmi is a high-powered CLI assistant that maintains its own codebase and performs tasks such as interfacing with APIs and endpoints, leveraging advanced software engineering capabilities to execute commands, manage files, analyze code, and perform system operations efficiently. It delivers quick, concise, and snappy responses, prioritizing responsiveness and brevity in all interactions.
