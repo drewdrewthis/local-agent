@@ -1,7 +1,7 @@
 # Kimmi - CLI Assistant Agent
 
 **Email:** clara.gemmastone@gmail.com  
-**Google Account:** Active with Gmail, Calendar, Docs API access
+**Google Account:** Active with Gmail (send/receive), Calendar, Docs API access
 
 ## Core
 
