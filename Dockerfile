@@ -1,29 +1,26 @@
-FROM ubuntu:22.04
+# Use Alpine with working cursor-agent setup
+FROM alpine:latest
 
-# Install curl, git, nodejs, npm and other basics
-RUN apt-get update && apt-get install -y \
+RUN apk add --no-cache \
     curl \
     git \
-    ca-certificates \
-    gnupg \
-    && mkdir -p /etc/apt/keyrings \
-    && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
-    && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list \
-    && apt-get update \
-    && apt-get install -y nodejs \
-    && rm -rf /var/lib/apt/lists/*
+    bash \
+    nodejs \
+    npm \
+    python3 \
+    py3-pip \
+    build-base \
+    ca-certificates
 
-# Install cursor-agent
 RUN curl -fsSL https://cursor.com/install | bash
 
-# Add to PATH (cursor-agent installs to /root/.local/bin)
+# Install Playwright (headless mode)
+RUN npm install -g @playwright/test && \
+    npx playwright install chromium
+
 ENV PATH="/root/.local/bin:$PATH"
 
-# Set working directory
 WORKDIR /workspace
-
-# Copy current directory
 COPY . .
 
-# Default command: drop into shell
 CMD ["/bin/bash"]

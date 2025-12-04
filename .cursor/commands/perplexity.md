@@ -1,7 +1,14 @@
 # perplexity
 
-Using the Playwright MCP server in headless mode (--headless)
+Use Playwright MCP server to search Perplexity.ai
 
-Go to Perplexity: https://www.perplexity.ai/ 
+**Steps:**
 
-And then prompt the user for what they want to search for
+1. Navigate to https://www.perplexity.ai/
+2. Wait for page to load
+3. Prompt user for search query
+4. Type the query into the search input field
+5. Submit the search
+6. Continue the conversation with the user until the user is satisfied
+
+**Usage:** Run this command to interactively search Perplexity using browser automation.
