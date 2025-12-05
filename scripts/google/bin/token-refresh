@@ -1,0 +1,137 @@
+#!/bin/bash
+# Token Refresh Script
+# Manually refresh Google OAuth tokens
+
+set -euo pipefail
+
+# Setup environment
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LIB_DIR="$SCRIPT_DIR/../lib"
+source "$LIB_DIR/utils.sh"
+source "$LIB_DIR/auth.sh"
+
+setup_environment
+
+# Parse arguments
+FORCE_REFRESH=false
+SHOW_STATUS=false
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -f|--force)
+            FORCE_REFRESH=true
+            shift
+            ;;
+        -s|--status)
+            SHOW_STATUS=true
+            shift
+            ;;
+        -h|--help)
+            cat << EOF
+Token Refresh Tool
+
+USAGE:
+    $0 [OPTIONS]
+
+OPTIONS:
+    -f, --force         Force refresh even if token is still valid
+    -s, --status        Show current token status
+    -h, --help          Show this help
+
+DESCRIPTION:
+    Refreshes Google OAuth access tokens. Tokens are automatically cached
+    and refreshed when needed, but you can manually refresh with this tool.
+
+    Use --status to check if your current token is valid and when it expires.
+EOF
+            exit 0
+            ;;
+        *)
+            log_error "Unknown option: $1"
+            exit 1
+            ;;
+    esac
+done
+
+show_token_status() {
+    if [[ -f "$TOKEN_CACHE_FILE" ]]; then
+        local expires_at token_present
+        expires_at=$(jq -r '.expires_at // 0' "$TOKEN_CACHE_FILE" 2>/dev/null || echo "0")
+        token_present=$(jq -r '.access_token // empty' "$TOKEN_CACHE_FILE" 2>/dev/null)
+
+        if [[ -n "$token_present" ]] && [[ $expires_at -gt 0 ]]; then
+            local current_time=$(date +%s)
+            local time_until_expiry=$((expires_at - current_time))
+
+            if [[ $time_until_expiry -gt 0 ]]; then
+                local hours_left=$((time_until_expiry / 3600))
+                local minutes_left=$(((time_until_expiry % 3600) / 60))
+
+                echo "✅ Token is valid"
+                echo "   Expires in: ${hours_left}h ${minutes_left}m"
+                echo "   Expires at: $(date -r $expires_at 2>/dev/null || date -d "@$expires_at" 2>/dev/null)"
+
+                # Test token validity
+                if ensure_valid_token > /dev/null 2>&1; then
+                    echo "   Status: Working correctly"
+                else
+                    echo "   Status: Token exists but may have issues"
+                fi
+            else
+                echo "❌ Token has expired"
+                echo "   Expired at: $(date -r $expires_at 2>/dev/null || date -d "@$expires_at" 2>/dev/null)"
+            fi
+        else
+            echo "❌ No valid token cached"
+        fi
+    else
+        echo "❌ No token cache file found"
+    fi
+
+    # Check environment
+    echo ""
+    echo "🔧 Environment check:"
+    if [[ -f ".env" ]]; then
+        echo "   ✅ .env file exists"
+        if grep -q "GOOGLE_REFRESH_TOKEN" .env 2>/dev/null; then
+            echo "   ✅ Refresh token found in .env"
+        else
+            echo "   ❌ Refresh token missing from .env"
+        fi
+    else
+        echo "   ❌ .env file not found"
+    fi
+}
+
+main() {
+    if [[ "$SHOW_STATUS" == "true" ]]; then
+        show_token_status
+        exit 0
+    fi
+
+    log_info "Refreshing Google OAuth tokens..."
+
+    if [[ "$FORCE_REFRESH" == "true" ]]; then
+        log_info "Forcing token refresh..."
+    fi
+
+    local token
+    token=$(ensure_valid_token "$FORCE_REFRESH")
+
+    if [[ -n "$token" ]]; then
+        echo "✅ Token refreshed successfully!"
+        echo "   Access token: ${token:0:20}..."
+        echo ""
+        show_token_status
+    else
+        log_error "Failed to refresh token"
+        echo ""
+        echo "🔍 Troubleshooting:"
+        echo "   1. Check your .env file has GOOGLE_REFRESH_TOKEN"
+        echo "   2. Verify your Google Cloud OAuth credentials"
+        echo "   3. Try re-authorizing if the refresh token is invalid"
+        exit 1
+    fi
+}
+
+main "$@"

@@ -1,0 +1,112 @@
+#!/bin/bash
+# Gmail Checker Script
+# Check recent emails and display summary
+
+set -euo pipefail
+
+# Setup environment
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LIB_DIR="$SCRIPT_DIR/../lib"
+source "$LIB_DIR/utils.sh"
+source "$LIB_DIR/gmail.sh"
+
+setup_environment
+
+# Parse arguments
+SHOW_COUNT_ONLY=false
+MAX_RESULTS=20
+QUERY=""
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -c|--count-only)
+            SHOW_COUNT_ONLY=true
+            shift
+            ;;
+        -n|--max-results)
+            MAX_RESULTS="$2"
+            shift 2
+            ;;
+        -q|--query)
+            QUERY="$2"
+            shift 2
+            ;;
+        -h|--help)
+            cat << EOF
+Gmail Checker - Check recent emails
+
+USAGE:
+    $0 [OPTIONS]
+
+OPTIONS:
+    -c, --count-only     Show only unread count
+    -n, --max-results N  Maximum results to show (default: 20)
+    -q, --query QUERY    Search query (e.g., "from:someone", "subject:important")
+    -h, --help          Show this help
+
+EXAMPLES:
+    $0                    # Show recent 20 emails
+    $0 -c                 # Show only unread count
+    $0 -q "from:important@example.com"  # Search for emails from specific sender
+EOF
+            exit 0
+            ;;
+        *)
+            log_error "Unknown option: $1"
+            exit 1
+            ;;
+    esac
+done
+
+main() {
+    if [[ "$SHOW_COUNT_ONLY" == "true" ]]; then
+        local unread_count
+        unread_count=$(gmail_get_unread_count)
+        echo "📬 Unread emails: $unread_count"
+        exit 0
+    fi
+
+    log_info "Fetching recent emails..."
+
+    local messages_response
+    messages_response=$(gmail_list_messages "$QUERY" "$MAX_RESULTS")
+
+    if [[ -z "$messages_response" ]]; then
+        log_error "Failed to fetch emails"
+        exit 1
+    fi
+
+    local messages
+    messages=$(safe_jq "$messages_response" '.messages // []' '[]')
+
+    if [[ "$messages" == "[]" ]]; then
+        echo "📭 No emails found"
+        exit 0
+    fi
+
+    local message_count
+    message_count=$(echo "$messages" | jq 'length')
+
+    echo "📧 Recent emails ($message_count found):"
+    echo "═"$(printf '%.0s═' {1..60})"═"
+
+    local processed=0
+    local message_ids
+    message_ids=($(echo "$messages" | jq -r '.[].id'))
+
+    for message_id in "${message_ids[@]}"; do
+        ((processed++))
+
+        local message_details
+        message_details=$(gmail_get_message "$message_id" "metadata" "From,Subject,Date")
+
+        if [[ -n "$message_details" ]]; then
+            echo "Email $processed:"
+            gmail_format_email "$message_details"
+        fi
+    done
+
+    log_info "Displayed $processed emails"
+}
+
+main "$@"

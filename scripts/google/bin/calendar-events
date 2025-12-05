@@ -1,0 +1,159 @@
+#!/bin/bash
+# Calendar Events Script
+# List and manage calendar events
+
+set -euo pipefail
+
+# Setup environment
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LIB_DIR="$SCRIPT_DIR/../lib"
+source "$LIB_DIR/utils.sh"
+source "$LIB_DIR/calendar.sh"
+
+setup_environment
+
+# Parse arguments
+CALENDAR_ID=""
+ACTION="list"
+EVENT_ID=""
+SUMMARY=""
+START_DATE=""
+END_DATE=""
+DESCRIPTION=""
+LOCATION=""
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -c|--calendar)
+            CALENDAR_ID="$2"
+            shift 2
+            ;;
+        --create)
+            ACTION="create"
+            SUMMARY="$2"
+            START_DATE="$3"
+            END_DATE="$4"
+            shift 4
+            ;;
+        --delete)
+            ACTION="delete"
+            EVENT_ID="$2"
+            shift 2
+            ;;
+        -d|--description)
+            DESCRIPTION="$2"
+            shift 2
+            ;;
+        -l|--location)
+            LOCATION="$2"
+            shift 2
+            ;;
+        -h|--help)
+            cat << EOF
+Calendar Events Manager
+
+USAGE:
+    $0 [OPTIONS] [ACTION]
+
+ACTIONS:
+    (default)           List upcoming events
+    --create SUMMARY START_DATE END_DATE  Create new event
+    --delete EVENT_ID   Delete event by ID
+
+OPTIONS:
+    -c, --calendar ID   Calendar ID (default: primary)
+    -d, --description TEXT  Event description
+    -l, --location TEXT     Event location
+    -h, --help             Show this help
+
+DATES: Use YYYY-MM-DD format
+CALENDAR_ID: Can be 'primary' or full calendar ID
+
+EXAMPLES:
+    $0                              # List upcoming events
+    $0 --create "Team Meeting" 2025-12-06 2025-12-06
+    $0 --delete abc123def456
+    $0 -c primary --create "Vacation" 2025-12-20 2025-12-27
+EOF
+            exit 0
+            ;;
+        *)
+            log_error "Unknown option: $1"
+            exit 1
+            ;;
+    esac
+done
+
+main() {
+    case "$ACTION" in
+        "list")
+            log_info "Fetching calendar events..."
+
+            local events_response
+            events_response=$(calendar_list_events "$CALENDAR_ID" "" "" "20")
+
+            if [[ -z "$events_response" ]]; then
+                log_error "Failed to fetch events"
+                exit 1
+            fi
+
+            local events
+            events=$(safe_jq "$events_response" '.items // []' '[]')
+
+            if [[ "$events" == "[]" ]]; then
+                echo "📅 No upcoming events found"
+                exit 0
+            fi
+
+            echo "📅 Upcoming events:"
+            echo "═"$(printf '%.0s═' {1..60})"═"
+
+            echo "$events" | jq -c '.[]' | while read -r event; do
+                calendar_format_event "$event"
+            done
+            ;;
+
+        "create")
+            [[ -z "$SUMMARY" ]] && { log_error "Summary is required for event creation"; exit 1; }
+            [[ -z "$START_DATE" ]] && { log_error "Start date is required"; exit 1; }
+            [[ -z "$END_DATE" ]] && { log_error "End date is required"; exit 1; }
+
+            # Validate dates
+            validate_date "$START_DATE" || exit 1
+            validate_date "$END_DATE" || exit 1
+
+            log_info "Creating event: $SUMMARY ($START_DATE to $END_DATE)"
+
+            local result
+            result=$(calendar_create_event "${CALENDAR_ID:-primary}" "$SUMMARY" "$START_DATE" "$END_DATE" "$DESCRIPTION" "$LOCATION")
+
+            if [[ -n "$result" ]]; then
+                echo "✅ Event created successfully!"
+                echo "$result" | jq -r '"Event ID: " + .id, "Link: " + .htmlLink'
+            else
+                log_error "Failed to create event"
+                exit 1
+            fi
+            ;;
+
+        "delete")
+            [[ -z "$EVENT_ID" ]] && { log_error "Event ID is required for deletion"; exit 1; }
+
+            log_info "Deleting event: $EVENT_ID"
+
+            if calendar_delete_event "${CALENDAR_ID:-primary}" "$EVENT_ID"; then
+                echo "✅ Event deleted successfully!"
+            else
+                log_error "Failed to delete event"
+                exit 1
+            fi
+            ;;
+
+        *)
+            log_error "Unknown action: $ACTION"
+            exit 1
+            ;;
+    esac
+}
+
+main "$@"

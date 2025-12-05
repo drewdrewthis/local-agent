@@ -1,0 +1,134 @@
+#!/bin/bash
+# Gmail Archive Script
+# Archive emails from inbox
+
+set -euo pipefail
+
+# Setup environment
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LIB_DIR="$SCRIPT_DIR/../lib"
+source "$LIB_DIR/utils.sh"
+source "$LIB_DIR/gmail.sh"
+
+setup_environment
+
+# Parse arguments
+ARCHIVE_ALL=false
+MESSAGE_ID=""
+MAX_TO_ARCHIVE=50
+DRY_RUN=false
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --all)
+            ARCHIVE_ALL=true
+            shift
+            ;;
+        --id)
+            MESSAGE_ID="$2"
+            shift 2
+            ;;
+        --max)
+            MAX_TO_ARCHIVE="$2"
+            shift 2
+            ;;
+        --dry-run)
+            DRY_RUN=true
+            shift
+            ;;
+        -h|--help)
+            cat << EOF
+Gmail Archive Tool
+
+USAGE:
+    $0 [OPTIONS]
+
+OPTIONS:
+    --all               Archive all inbox emails
+    --id MESSAGE_ID     Archive specific message by ID
+    --max N             Maximum emails to archive (default: 50)
+    --dry-run           Show what would be archived without doing it
+    -h, --help          Show this help
+
+EXAMPLES:
+    $0 --all                    # Archive all inbox emails
+    $0 --id abc123              # Archive specific email
+    $0 --max 10 --dry-run       # Show first 10 emails that would be archived
+EOF
+            exit 0
+            ;;
+        *)
+            log_error "Unknown option: $1"
+            exit 1
+            ;;
+    esac
+done
+
+main() {
+    if [[ -n "$MESSAGE_ID" ]]; then
+        # Archive specific message
+        log_info "Archiving message: $MESSAGE_ID"
+
+        if [[ "$DRY_RUN" == "true" ]]; then
+            echo "Would archive message: $MESSAGE_ID"
+            exit 0
+        fi
+
+        if gmail_archive_message "$MESSAGE_ID"; then
+            echo "✅ Archived message: $MESSAGE_ID"
+        else
+            log_error "Failed to archive message: $MESSAGE_ID"
+            exit 1
+        fi
+
+    elif [[ "$ARCHIVE_ALL" == "true" ]]; then
+        # Archive all inbox messages
+        log_info "Fetching inbox messages..."
+
+        local messages_response
+        messages_response=$(gmail_list_messages "" "$MAX_TO_ARCHIVE" "INBOX")
+
+        if [[ -z "$messages_response" ]]; then
+            log_error "Failed to fetch inbox messages"
+            exit 1
+        fi
+
+        local messages
+        messages=$(safe_jq "$messages_response" '.messages // []' '[]')
+
+        if [[ "$messages" == "[]" ]]; then
+            echo "📭 Inbox is already empty"
+            exit 0
+        fi
+
+        local message_count
+        message_count=$(echo "$messages" | jq 'length')
+
+        if [[ "$DRY_RUN" == "true" ]]; then
+            echo "Would archive $message_count emails:"
+            echo "$messages" | jq -r '.[].id' | head -10
+            if [[ $message_count -gt 10 ]]; then
+                echo "... and $(($message_count - 10)) more"
+            fi
+            exit 0
+        fi
+
+        log_info "Archiving $message_count emails..."
+
+        local message_ids
+        message_ids=($(echo "$messages" | jq -r '.[].id'))
+
+        if gmail_archive_messages "${message_ids[@]}"; then
+            echo "✅ Successfully archived $message_count emails"
+        else
+            log_error "Failed to archive some emails"
+            exit 1
+        fi
+
+    else
+        log_error "Specify --all to archive all emails or --id to archive a specific message"
+        exit 1
+    fi
+}
+
+main "$@"
