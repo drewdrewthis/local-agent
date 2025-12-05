@@ -1,0 +1,90 @@
+#!/bin/bash
+# Unified Development Tools Dispatcher
+# Single entry point for all development tools
+
+set -euo pipefail
+
+# Get the directory where this script is located
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+GOOGLE_BIN="$SCRIPT_DIR/scripts/google/bin"
+TODOIST_BIN="$SCRIPT_DIR/scripts/todoist/bin"
+
+# Check if tools are available
+check_tools() {
+    local missing_tools=()
+
+    if [[ ! -d "$GOOGLE_BIN" ]]; then
+        missing_tools+=("Google tools")
+    fi
+
+    if [[ ! -d "$TODOIST_BIN" ]]; then
+        missing_tools+=("Todoist tools")
+    fi
+
+    if [[ ${#missing_tools[@]} -gt 0 ]]; then
+        echo "❌ Missing tools: ${missing_tools[*]}" >&2
+        echo "Run: make install" >&2
+        exit 1
+    fi
+}
+
+# Show help
+show_help() {
+    cat << EOF
+Development Tools - Unified CLI
+
+USAGE:
+    $0 TOOL COMMAND [ARGS...]
+
+TOOLS:
+    google     Google API tools (Gmail, Calendar, Drive)
+    todoist    Todoist task management
+
+EXAMPLES:
+    $0 google check --count-only          # Gmail unread count
+    $0 google calendar                    # List calendar events
+    $0 todoist today                      # Today's tasks
+    $0 todoist add "New task" -p 3        # Add high-priority task
+
+For tool-specific help:
+    $0 TOOL --help
+    $0 TOOL COMMAND --help
+
+INSTALLATION:
+    make install          # Install all tools
+    make install-google   # Install Google tools only
+    make install-todoist  # Install Todoist tools only
+
+QUICK SETUP:
+    make dev-setup        # Add to PATH automatically
+EOF
+}
+
+# Main dispatcher
+main() {
+    local tool="${1:-}"
+
+    case "$tool" in
+        google)
+            shift
+            check_tools
+            exec "$GOOGLE_BIN/google-check" "$@"
+            ;;
+        todoist)
+            shift
+            check_tools
+            exec "$TODOIST_BIN/todoist" "$@"
+            ;;
+        help|-h|--help|"")
+            show_help
+            ;;
+        *)
+            echo "❌ Unknown tool: $tool" >&2
+            echo "" >&2
+            show_help
+            exit 1
+            ;;
+    esac
+}
+
+main "$@"
