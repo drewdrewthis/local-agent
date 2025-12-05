@@ -1,0 +1,75 @@
+#!/bin/bash
+# Quick Add Task Script
+# Fast task creation for Todoist
+
+set -euo pipefail
+
+# Setup environment
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LIB_DIR="$SCRIPT_DIR/../lib"
+source "$LIB_DIR/utils.sh"
+source "$LIB_DIR/tasks.sh"
+
+setup_environment
+
+# Parse arguments
+PRIORITY=1
+DUE_DATE=""
+CONTENT=""
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -p|--priority)
+            PRIORITY="$2"
+            shift 2
+            ;;
+        -d|--due)
+            DUE_DATE="$2"
+            shift 2
+            ;;
+        -h|--help)
+            cat << EOF
+Quick Add Task - Fast Todoist task creation
+
+USAGE:
+    $0 [OPTIONS] "task content"
+
+OPTIONS:
+    -p, --priority N    Priority (1-4, default: 1)
+    -d, --due DATE      Due date (YYYY-MM-DD, today, tomorrow)
+    -h, --help          Show this help
+
+EXAMPLES:
+    $0 "Buy milk"
+    $0 -p 3 -d tomorrow "Call dentist"
+    $0 -d 2025-12-25 "Buy Christmas presents"
+EOF
+            exit 0
+            ;;
+        *)
+            if [[ -z "$CONTENT" ]]; then
+                CONTENT="$1"
+            else
+                CONTENT="$CONTENT $1"
+            fi
+            shift
+            ;;
+    esac
+done
+
+if [[ -z "$CONTENT" ]]; then
+    log_error "Task content is required"
+    echo "Use: $0 [-p priority] [-d due_date] \"task content\"" >&2
+    exit 1
+fi
+
+# Create the task
+result=$(tasks_create "$CONTENT" "$PRIORITY" "$DUE_DATE")
+
+if [[ -n "$result" ]]; then
+    echo "✅ Quick task added!"
+    format_task "$result"
+else
+    log_error "Failed to create task"
+    exit 1
+fi

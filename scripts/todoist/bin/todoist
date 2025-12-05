@@ -1,0 +1,510 @@
+#!/bin/bash
+# Main Todoist CLI Tool
+# Unified interface for all Todoist operations
+
+set -euo pipefail
+
+# Setup environment
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LIB_DIR="$SCRIPT_DIR/../lib"
+source "$LIB_DIR/utils.sh"
+source "$LIB_DIR/tasks.sh"
+source "$LIB_DIR/projects.sh"
+
+setup_environment
+
+# Main command dispatcher
+main() {
+    local command="${1:-help}"
+
+    case "$command" in
+        "add"|"create")
+            shift
+            task_add "$@"
+            ;;
+        "list"|"ls")
+            shift
+            task_list "$@"
+            ;;
+        "complete"|"done"|"close")
+            shift
+            task_complete "$@"
+            ;;
+        "delete"|"remove"|"rm")
+            shift
+            task_delete "$@"
+            ;;
+        "search")
+            shift
+            task_search "$@"
+            ;;
+        "update"|"edit")
+            shift
+            task_update "$@"
+            ;;
+        "projects")
+            shift
+            project_list "$@"
+            ;;
+        "overdue")
+            task_list_overdue
+            ;;
+        "today")
+            task_list_today
+            ;;
+        "tomorrow")
+            task_list_tomorrow
+            ;;
+        "urgent")
+            task_list_urgent
+            ;;
+        "help"|"-h"|"--help"|*)
+            show_help
+            ;;
+    esac
+}
+
+# Add new task
+task_add() {
+    local content=""
+    local priority=1
+    local due_date=""
+    local project=""
+    local parent=""
+
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            -p|--priority)
+                priority="$2"
+                shift 2
+                ;;
+            -d|--due|--due-date)
+                due_date="$2"
+                shift 2
+                ;;
+            --project)
+                project="$2"
+                shift 2
+                ;;
+            --parent)
+                parent="$2"
+                shift 2
+                ;;
+            -h|--help)
+                echo "Usage: $0 add [OPTIONS] \"task content\""
+                echo ""
+                echo "Add a new task to Todoist"
+                echo ""
+                echo "OPTIONS:"
+                echo "  -p, --priority N    Priority (1=low, 2=medium, 3=high, 4=urgent)"
+                echo "  -d, --due DATE      Due date (YYYY-MM-DD, 'today', 'tomorrow')"
+                echo "  --project ID        Project ID to add task to"
+                echo "  --parent ID         Parent task ID (creates subtask)"
+                echo "  -h, --help          Show this help"
+                echo ""
+                echo "EXAMPLES:"
+                echo "  $0 add \"Buy groceries\" -p 2 -d tomorrow"
+                echo "  $0 add \"Call mom\" --parent 123456789"
+                return 0
+                ;;
+            *)
+                if [[ -z "$content" ]]; then
+                    content="$1"
+                else
+                    log_error "Unexpected argument: $1"
+                    return 1
+                fi
+                shift
+                ;;
+        esac
+    done
+
+    if [[ -z "$content" ]]; then
+        log_error "Task content is required"
+        echo "Use: $0 add \"task content\" [options]" >&2
+        return 1
+    fi
+
+    local project_id=""
+    if [[ -n "$project" ]]; then
+        project_id=$(projects_find_by_name "$project")
+        if [[ -z "$project_id" ]]; then
+            log_error "Project not found: $project"
+            return 1
+        fi
+    fi
+
+    local result
+    result=$(tasks_create "$content" "$priority" "$due_date" "$project_id" "$parent")
+
+    if [[ -n "$result" ]]; then
+        echo "✅ Task created successfully!"
+        format_task "$result"
+        return 0
+    else
+        log_error "Failed to create task"
+        return 1
+    fi
+}
+
+# List tasks
+task_list() {
+    local filter=""
+    local limit=50
+
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            --filter)
+                filter="$2"
+                shift 2
+                ;;
+            --limit|-n)
+                limit="$2"
+                shift 2
+                ;;
+            -h|--help)
+                echo "Usage: $0 list [OPTIONS]"
+                echo ""
+                echo "List tasks from Todoist"
+                echo ""
+                echo "OPTIONS:"
+                echo "  --filter QUERY      Filter tasks (e.g., 'today', 'overdue', '#project')"
+                echo "  --limit N           Maximum tasks to show (default: 50)"
+                echo "  -h, --help          Show this help"
+                echo ""
+                echo "EXAMPLES:"
+                echo "  $0 list"
+                echo "  $0 list --filter today --limit 10"
+                echo "  $0 list --filter overdue"
+                return 0
+                ;;
+            *)
+                log_error "Unknown option: $1"
+                return 1
+                ;;
+        esac
+    done
+
+    local tasks
+    tasks=$(tasks_get_all "$filter")
+
+    if [[ -z "$tasks" ]]; then
+        echo "📭 No tasks found"
+        return 0
+    fi
+
+    local task_count
+    task_count=$(echo "$tasks" | jq 'length')
+
+    echo "📋 Tasks (${task_count} found):"
+    echo "═"$(printf '%.0s═' {1..80})"═"
+
+    # Header
+    printf "%-12s | %-40s | %-8s | %-15s | %-s\n" "ID" "Content" "Priority" "Due Date" "Project"
+    echo "═"$(printf '%.0s═' {1..80})"═"
+
+    # Tasks
+    local count=0
+    echo "$tasks" | jq -c '.[]' | while read -r task; do
+        if [[ $count -lt $limit ]]; then
+            # Add project name to task JSON for display
+            local project_name=""
+            local project_id
+            project_id=$(safe_jq "$task" ".project_id" "")
+            if [[ -n "$project_id" ]]; then
+                local project_info
+                project_info=$(projects_get "$project_id" 2>/dev/null)
+                if [[ -n "$project_info" ]]; then
+                    project_name=$(safe_jq "$project_info" ".name" "")
+                fi
+            fi
+
+            # Add project name to task for formatting
+            task_with_project=$(echo "$task" | jq --arg pname "$project_name" '. + {project_name: $pname}')
+
+            format_task "$task_with_project"
+            ((count++))
+        fi
+    done
+
+    if [[ $task_count -gt $limit ]]; then
+        echo "... and $(($task_count - $limit)) more tasks"
+    fi
+}
+
+# Complete task
+task_complete() {
+    local task_ids=()
+    local confirm=true
+
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            --no-confirm)
+                confirm=false
+                shift
+                ;;
+            -h|--help)
+                echo "Usage: $0 complete [OPTIONS] TASK_ID [TASK_ID...]"
+                echo ""
+                echo "Mark tasks as completed in Todoist"
+                echo ""
+                echo "OPTIONS:"
+                echo "  --no-confirm        Don't ask for confirmation"
+                echo "  -h, --help          Show this help"
+                echo ""
+                echo "EXAMPLES:"
+                echo "  $0 complete 123456789"
+                echo "  $0 complete 111 222 333 --no-confirm"
+                return 0
+                ;;
+            *)
+                if validate_task_id "$1"; then
+                    task_ids+=("$1")
+                else
+                    return 1
+                fi
+                shift
+                ;;
+        esac
+    done
+
+    if [[ ${#task_ids[@]} -eq 0 ]]; then
+        log_error "Task ID is required"
+        echo "Use: $0 complete TASK_ID [TASK_ID...]" >&2
+        return 1
+    fi
+
+    if [[ "$confirm" == "true" ]]; then
+        if ! confirm_action "Complete ${#task_ids[@]} task(s)?"; then
+            echo "Cancelled."
+            return 0
+        fi
+    fi
+
+    local success_count=0
+    for task_id in "${task_ids[@]}"; do
+        if tasks_complete "$task_id"; then
+            ((success_count++))
+        fi
+    done
+
+    if [[ $success_count -gt 0 ]]; then
+        echo "✅ Completed $success_count/${#task_ids[@]} task(s)"
+    else
+        log_error "Failed to complete any tasks"
+        return 1
+    fi
+}
+
+# Delete task
+task_delete() {
+    local task_ids=()
+    local confirm=true
+
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            --no-confirm)
+                confirm=false
+                shift
+                ;;
+            -h|--help)
+                echo "Usage: $0 delete [OPTIONS] TASK_ID [TASK_ID...]"
+                echo ""
+                echo "Delete tasks from Todoist"
+                echo ""
+                echo "OPTIONS:"
+                echo "  --no-confirm        Don't ask for confirmation"
+                echo "  -h, --help          Show this help"
+                echo ""
+                echo "EXAMPLES:"
+                echo "  $0 delete 123456789"
+                echo "  $0 delete 111 222 333 --no-confirm"
+                return 0
+                ;;
+            *)
+                if validate_task_id "$1"; then
+                    task_ids+=("$1")
+                else
+                    return 1
+                fi
+                shift
+                ;;
+        esac
+    done
+
+    if [[ ${#task_ids[@]} -eq 0 ]]; then
+        log_error "Task ID is required"
+        echo "Use: $0 delete TASK_ID [TASK_ID...]" >&2
+        return 1
+    fi
+
+    if [[ "$confirm" == "true" ]]; then
+        if ! confirm_action "Delete ${#task_ids[@]} task(s)? This cannot be undone!"; then
+            echo "Cancelled."
+            return 0
+        fi
+    fi
+
+    local success_count=0
+    for task_id in "${task_ids[@]}"; do
+        if tasks_delete "$task_id"; then
+            ((success_count++))
+        fi
+    done
+
+    if [[ $success_count -gt 0 ]]; then
+        echo "🗑️  Deleted $success_count/${#task_ids[@]} task(s)"
+    else
+        log_error "Failed to delete any tasks"
+        return 1
+    fi
+}
+
+# Search tasks
+task_search() {
+    local query=""
+
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            -h|--help)
+                echo "Usage: $0 search \"query\""
+                echo ""
+                echo "Search tasks in Todoist"
+                echo ""
+                echo "EXAMPLES:"
+                echo "  $0 search \"NY trip\""
+                echo "  $0 search \"urgent\""
+                return 0
+                ;;
+            *)
+                if [[ -z "$query" ]]; then
+                    query="$1"
+                else
+                    query="$query $1"
+                fi
+                shift
+                ;;
+        esac
+    done
+
+    if [[ -z "$query" ]]; then
+        log_error "Search query is required"
+        echo "Use: $0 search \"query\"" >&2
+        return 1
+    fi
+
+    local results
+    results=$(tasks_search "$query")
+
+    if [[ -z "$results" ]]; then
+        echo "🔍 No tasks found matching: \"$query\""
+        return 0
+    fi
+
+    local count
+    count=$(echo "$results" | jq 'length')
+
+    echo "🔍 Found $count task(s) matching: \"$query\""
+    echo "═"$(printf '%.0s═' {1..80})"═"
+
+    echo "$results" | jq -c '.[]' | while read -r task; do
+        format_task "$task"
+    done
+}
+
+# Update task
+task_update() {
+    log_error "Task update functionality coming soon"
+    log_error "For now, use the Todoist web/app interface for updates"
+    return 1
+}
+
+# List projects
+project_list() {
+    local projects
+    projects=$(projects_get_all)
+
+    if [[ -z "$projects" ]]; then
+        echo "📁 No projects found"
+        return 0
+    fi
+
+    local count
+    count=$(echo "$projects" | jq 'length')
+
+    echo "📁 Projects ($count found):"
+    echo "═"$(printf '%.0s═' {1..60})"═"
+
+    # Header
+    printf "%-12s | %-30s | %-10s | %-s\n" "ID" "Name" "Color" "Parent"
+    echo "═"$(printf '%.0s═' {1..60})"═"
+
+    echo "$projects" | jq -c '.[]' | while read -r project; do
+        format_project "$project"
+    done
+}
+
+# List overdue tasks
+task_list_overdue() {
+    echo "⚠️  Overdue Tasks:"
+    task_list --filter "overdue"
+}
+
+# List today's tasks
+task_list_today() {
+    echo "📅 Today's Tasks:"
+    task_list --filter "today"
+}
+
+# List tomorrow's tasks
+task_list_tomorrow() {
+    echo "📅 Tomorrow's Tasks:"
+    task_list --filter "tomorrow"
+}
+
+# List urgent tasks
+task_list_urgent() {
+    echo "🔴 Urgent Tasks:"
+    task_list --filter "priority 4"
+}
+
+# Show help
+show_help() {
+    cat << EOF
+Todoist CLI Tool - Manage your tasks from the command line
+
+USAGE:
+    $0 COMMAND [OPTIONS] [ARGS...]
+
+COMMANDS:
+    add        Create a new task
+    list       List tasks (with optional filters)
+    complete   Mark tasks as completed
+    delete     Delete tasks
+    search     Search tasks by content
+    projects   List all projects
+
+QUICK COMMANDS:
+    overdue    Show overdue tasks
+    today      Show today's tasks
+    tomorrow   Show tomorrow's tasks
+    urgent     Show urgent tasks
+
+OPTIONS:
+    -h, --help Show help for specific command
+
+EXAMPLES:
+    $0 add "Buy groceries" -p 2 -d tomorrow
+    $0 list --filter "today"
+    $0 complete 123456789
+    $0 search "NY trip"
+    $0 projects
+
+For more help on a specific command: $0 COMMAND --help
+
+Set DEBUG=true for verbose logging.
+Set NON_INTERACTIVE=true to skip confirmations.
+EOF
+}
+
+main "$@"
