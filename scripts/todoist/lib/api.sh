@@ -9,8 +9,12 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/auth.sh"
 
 # Configuration
-readonly DEFAULT_TIMEOUT=30
-readonly MAX_RETRIES=3
+if [[ -z "${DEFAULT_TIMEOUT:-}" ]]; then
+    readonly DEFAULT_TIMEOUT=30
+fi
+if [[ -z "${MAX_RETRIES:-}" ]]; then
+    readonly MAX_RETRIES=3
+fi
 
 # Logging
 log_info() { echo "[$(date +'%Y-%m-%d %H:%M:%S')] INFO: $*" >&2; }

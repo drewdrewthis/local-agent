@@ -103,3 +103,7 @@ status:
 	@echo "  Binaries: $(BINDIR)"
 	@echo "  Libraries: $(LIBDIR)"
 	@echo "  Docs: $(SHAREDIR)"
+
+start:
+	@echo "Starting cursor-agent..."
+	@bash -c 'source .env && cursor-agent --model "grok"'

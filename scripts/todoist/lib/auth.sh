@@ -4,14 +4,18 @@
 
 set -euo pipefail
 
-# Load environment if .env exists
-if [[ -f ".env" ]]; then
+# Load environment if .env exists and variables not already set
+if [[ -f ".env" ]] && [[ -z "${TODOIST_TOKEN:-}" ]]; then
     source .env
 fi
 
 # Configuration
-readonly TODOIST_API_BASE="https://api.todoist.com/rest/v2"
-readonly TOKEN_CACHE_FILE="${TODOIST_TOKEN_CACHE:-/tmp/todoist_token.cache}"
+if [[ -z "${TODOIST_API_BASE:-}" ]]; then
+    readonly TODOIST_API_BASE="https://api.todoist.com/rest/v2"
+fi
+if [[ -z "${TOKEN_CACHE_FILE:-}" ]]; then
+    readonly TOKEN_CACHE_FILE="${TODOIST_TOKEN_CACHE:-/tmp/todoist_token.cache}"
+fi
 
 # Logging
 log_info() { echo "[$(date +'%Y-%m-%d %H:%M:%S')] INFO: $*" >&2; }

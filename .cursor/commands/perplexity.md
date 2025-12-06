@@ -1,6 +1,6 @@
 # perplexity
 
-Use Playwright MCP server to search Perplexity.ai
+Use Playwright tools to search Perplexity.ai
 
 **Steps:**
 
