@@ -1,6 +1,17 @@
+# Secrets
 .env
-node_modules/
+
+# Logs
 *.log
-dist/
+logs/
+
+# OS
 .DS_Store
-.specstory
+
+# Editor
+.specstory/
+.cursor/
+
+# Temp
+*.tmp
+*.bak

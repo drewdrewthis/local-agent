@@ -1,6 +1,0 @@
-#!/bin/bash
-
-# Wrapper script for Google Sheets updates
-# Run from project root for convenience
-
-exec ./scripts/google/bin/sheets-update "$@"

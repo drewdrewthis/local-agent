@@ -1,24 +1,20 @@
 services:
-  local-agent:
+  clara:
     build: .
     container_name: clara-sandbox
     volumes:
-      - ./scripts:/workspace/scripts
-      - ./agent-notes:/workspace/agent-notes
-      - ./logs:/workspace/logs
-      - ./.env:/workspace/.env:ro
-      - ./AGENTS.md:/workspace/AGENTS.md:ro
-      - ./RULES.md:/workspace/RULES.md:ro
+      # Mount entire repo - agent can commit and push
+      - .:/workspace
+      # Persist git credentials
+      - ~/.gitconfig:/root/.gitconfig:ro
+      - ~/.ssh:/root/.ssh:ro
     ports:
       - "6080:6080"  # noVNC
     environment:
       - DISPLAY=:99
+      - GIT_AUTHOR_NAME=Clara Gemmastone
+      - GIT_AUTHOR_EMAIL=clara.gemmastone@gmail.com
+      - GIT_COMMITTER_NAME=Clara Gemmastone
+      - GIT_COMMITTER_EMAIL=clara.gemmastone@gmail.com
     stdin_open: true
     tty: true
-    # Restrict capabilities for sandbox security
-    cap_drop:
-      - ALL
-    cap_add:
-      - NET_BIND_SERVICE
-    security_opt:
-      - no-new-privileges:true
