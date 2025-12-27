@@ -13,6 +13,11 @@ RUN apt-get update && apt-get install -y \
 # Cursor agent CLI
 RUN curl -fsSL https://cursor.com/install | bash
 
+# SpecStory CLI (captures cursor-agent sessions)
+RUN curl -fsSL https://github.com/specstoryai/getspecstory/releases/latest/download/SpecStoryCLI_Linux_x86_64.tar.gz \
+    | tar -xz -C /usr/local/bin \
+    && chmod +x /usr/local/bin/specstory
+
 ENV PATH="/root/.local/bin:$PATH"
 
 WORKDIR /workspace

@@ -1,9 +1,11 @@
 {
   "mcpServers": {
-    "Playwright": {
-      "command": "npx @playwright/mcp@latest",
-      "env": {},
-      "args": []
+    "playwright": {
+      "command": "npx",
+      "args": ["@playwright/mcp@latest", "--browser", "firefox"],
+      "env": {
+        "DISPLAY": ":99"
+      }
     }
   }
 }
