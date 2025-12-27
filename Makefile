@@ -23,7 +23,7 @@ start:
 stop:
 	docker compose down
 
-shell:
+shell: start
 	docker compose exec clara bash || docker compose run --rm clara bash
 
 logs:

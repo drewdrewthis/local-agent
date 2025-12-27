@@ -8,7 +8,7 @@ if [[ -f /workspace/.env ]]; then
     set +a
 fi
 
-# Configure git for agent commits
+# Configure git
 git config --global user.name "${GIT_AUTHOR_NAME:-Clara Gemmastone}"
 git config --global user.email "${GIT_AUTHOR_EMAIL:-clara.gemmastone@gmail.com}"
 git config --global --add safe.directory /workspace

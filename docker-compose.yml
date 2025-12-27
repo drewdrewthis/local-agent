@@ -3,13 +3,10 @@ services:
     build: .
     container_name: clara-sandbox
     volumes:
-      # Mount entire repo - agent can commit and push
       - .:/workspace
-      # Persist git credentials
-      - ~/.gitconfig:/root/.gitconfig:ro
       - ~/.ssh:/root/.ssh:ro
     ports:
-      - "6080:6080"  # noVNC
+      - "6080:6080"
     environment:
       - DISPLAY=:99
       - GIT_AUTHOR_NAME=Clara Gemmastone
