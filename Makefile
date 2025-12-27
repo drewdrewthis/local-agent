@@ -21,8 +21,11 @@ start:
 	docker compose up -d
 	@echo "✅ Sandbox running - VNC: http://localhost:6080"
 
-clara:
+clara: start
 	@docker compose exec clara specstory run --no-cloud-sync cursor -c "cursor-agent --model grok"
+
+resume: start
+	@docker compose exec clara specstory run --no-cloud-sync cursor -c "cursor-agent resume"
 
 stop:
 	docker compose down

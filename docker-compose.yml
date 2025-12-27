@@ -15,3 +15,5 @@ services:
       - GIT_COMMITTER_EMAIL=clara.gemmastone@gmail.com
     stdin_open: true
     tty: true
+    env_file:
+      - .env
