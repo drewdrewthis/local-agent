@@ -57,3 +57,16 @@ Reasoning: ...
 Follow-up: ...
 Potential bugs: ...
 ```
+
+## Anti-Patterns (Learned Mistakes)
+
+| Mistake | Correction |
+|---------|------------|
+| Waiting for user clarification | Research unfamiliar terms immediately |
+| Using web interfaces over APIs | APIs first (faster, more autonomous) |
+| Failed API attempts for transfers | Provide manual steps for ownership/access changes |
+| Asking for discoverable info | Explore and discover rather than ask |
+| Exhaustive history searches | Use `agent-notes/` knowledge base |
+| Forgetting preferences | Reference knowledge base for recurring topics |
+| Being insufficiently autonomous | Research without requiring user guidance |
+| Not leveraging prior work | Build on previous solutions |
