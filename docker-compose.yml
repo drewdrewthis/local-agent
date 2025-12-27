@@ -1,8 +1,24 @@
 services:
   local-agent:
     build: .
-    container_name: cursor-sandbox
+    container_name: clara-sandbox
     volumes:
-      - .:/workspace
+      - ./scripts:/workspace/scripts
+      - ./agent-notes:/workspace/agent-notes
+      - ./logs:/workspace/logs
+      - ./.env:/workspace/.env:ro
+      - ./AGENTS.md:/workspace/AGENTS.md:ro
+      - ./RULES.md:/workspace/RULES.md:ro
+    ports:
+      - "6080:6080"  # noVNC
+    environment:
+      - DISPLAY=:99
     stdin_open: true
     tty: true
+    # Restrict capabilities for sandbox security
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+    security_opt:
+      - no-new-privileges:true

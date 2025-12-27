@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# Test Google Sheets API
+set -euo pipefail
+
+echo "Testing Google Sheets API..."
+
+# Load dependencies
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/../lib/auth.sh"
+source "$SCRIPT_DIR/../lib/sheets.sh"
+source "$SCRIPT_DIR/../lib/utils.sh"
+
+echo "Environment loaded. GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-NOT_SET}"
+
+# Test token
+echo "Testing token..."
+ensure_valid_token
+echo "Token valid!"
+
+# Test reading sheet
+SPREADSHEET_ID="1QYXsOTnYDSENkbYN9f5YzuQ8CE6BleWEpnRWIRsXvaA"
+echo "Testing sheet read..."
+result=$(sheets_get_values "$SPREADSHEET_ID" "Sheet1!A1:B5")
+echo "Sheet data: $result"
+
+echo "Test completed successfully!"

@@ -5,7 +5,8 @@
 set -euo pipefail
 
 # Configuration
-readonly LOG_FILE="${GOOGLE_LOG_FILE:-logs/google_integration.log}"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+readonly LOG_FILE="${GOOGLE_LOG_FILE:-$SCRIPT_DIR/../logs/google_integration.log}"
 readonly LOG_MAX_SIZE=10485760  # 10MB
 readonly LOG_MAX_FILES=5
 

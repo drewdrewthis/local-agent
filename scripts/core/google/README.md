@@ -2,6 +2,25 @@
 
 A comprehensive Bash library for Google API integrations with Gmail, Calendar, Drive, and more.
 
+## 🚨 Important: Working Directory Requirements
+
+**All scripts must be run from the project root directory** (where the `.env` file is located).
+
+❌ **Wrong:**
+```bash
+cd scripts/google/bin/
+./gmail-check
+```
+
+✅ **Correct:**
+```bash
+# From project root
+./scripts/google/bin/gmail-check
+# Or
+cd /path/to/project/root
+scripts/google/bin/gmail-check
+```
+
 ## Features
 
 - 🔐 **Automatic OAuth token management** with caching and refresh
@@ -31,7 +50,12 @@ GOOGLE_REFRESH_TOKEN="your_refresh_token"
 
 ### Basic Usage
 
+**Important:** All commands must be run from the project root directory.
+
 ```bash
+# From project root directory:
+./scripts/google/bin/gmail-check --count-only
+
 # Check unread email count
 ./scripts/google/bin/gmail-check --count-only
 
@@ -49,6 +73,9 @@ GOOGLE_REFRESH_TOKEN="your_refresh_token"
 
 # Check token status
 ./scripts/google/bin/token-refresh --status
+
+# Update Google Sheets
+./scripts/google/bin/sheets-update populate
 ```
 
 ## Library Structure
@@ -182,6 +209,33 @@ Enable detailed logging:
 
 ```bash
 DEBUG=true ./scripts/google/bin/[script-name]
+```
+
+### Troubleshooting
+
+#### ".env file not found" Error
+
+If you see this error, you're not running the script from the project root:
+
+```bash
+ERROR: .env file not found in current directory.
+Please run this script from the project root directory (where .env is located).
+```
+
+**Solution:** Navigate to your project root and run the script:
+
+```bash
+cd /path/to/your/project  # Where .env file is located
+./scripts/google/bin/sheets-update populate
+```
+
+#### Token Errors
+
+If you get authentication errors:
+
+```bash
+./scripts/google/bin/token-refresh --status  # Check token status
+./scripts/google/bin/token-refresh --force   # Force token refresh
 ```
 
 ## Security Notes

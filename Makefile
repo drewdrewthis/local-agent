@@ -1,109 +1,72 @@
-# Development Tools Makefile
-# Install and manage Google/Todoist CLI tools
+# Clara Gemmastone Agent Sandbox
+# Manage sandboxed agent environment with headed browser support
 
-.PHONY: help install install-google install-todoist uninstall clean test
+.PHONY: help build start stop shell status logs clean vnc
 
-# Default target
 help:
-	@echo "Development Tools Manager"
+	@echo "Clara Agent Sandbox"
 	@echo ""
-	@echo "Available targets:"
-	@echo "  install          Install all tools to system"
-	@echo "  install-google   Install Google tools only"
-	@echo "  install-todoist  Install Todoist tools only"
-	@echo "  uninstall        Remove all tools from system"
-	@echo "  clean            Clean build artifacts"
-	@echo "  test             Run tests"
+	@echo "Commands:"
+	@echo "  make build    Build Docker image"
+	@echo "  make start    Start sandbox (background)"
+	@echo "  make stop     Stop sandbox"
+	@echo "  make shell    Open shell in sandbox"
+	@echo "  make vnc      Open VNC in browser"
+	@echo "  make status   Show sandbox status"
+	@echo "  make logs     View sandbox logs"
+	@echo "  make clean    Remove containers and images"
 	@echo ""
-	@echo "Usage:"
-	@echo "  make install          # Install everything"
-	@echo "  make install-google   # Install Google tools"
-	@echo "  sudo make install     # Install system-wide"
+	@echo "VNC available at: http://localhost:6080"
 
-# Installation directories
-PREFIX ?= $(HOME)/.local
-BINDIR = $(PREFIX)/bin
-LIBDIR = $(PREFIX)/lib/dev-tools
-SHAREDIR = $(PREFIX)/share/dev-tools
-
-# Install all tools
-install: install-google install-todoist
-	@echo "✅ All tools installed!"
-	@echo "Add $(BINDIR) to your PATH:"
-	@echo "  export PATH=\"$(BINDIR):\$$PATH\""
-
-# Install Google tools
-install-google:
-	@echo "Installing Google tools..."
-	mkdir -p $(BINDIR) $(LIBDIR)/google $(SHAREDIR)
-	cp -r scripts/google/lib/* $(LIBDIR)/google/
-	cp scripts/google/README.md $(SHAREDIR)/google-README.md
-	ln -sf $(PWD)/scripts/google/bin/* $(BINDIR)/
-	chmod +x $(BINDIR)/google-*
-	@echo "✅ Google tools installed to $(BINDIR)"
-
-# Install Todoist tools
-install-todoist:
-	@echo "Installing Todoist tools..."
-	mkdir -p $(BINDIR) $(LIBDIR)/todoist $(SHAREDIR)
-	cp -r scripts/todoist/lib/* $(LIBDIR)/todoist/
-	cp scripts/todoist/README.md $(SHAREDIR)/todoist-README.md
-	ln -sf $(PWD)/scripts/todoist/bin/* $(BINDIR)/
-	chmod +x $(BINDIR)/todoist*
-	@echo "✅ Todoist tools installed to $(BINDIR)"
-
-# Uninstall all tools
-uninstall:
-	@echo "Uninstalling tools..."
-	rm -f $(BINDIR)/google-* $(BINDIR)/todoist*
-	rm -rf $(LIBDIR) $(SHAREDIR)
-	@echo "✅ Tools uninstalled"
-
-# Clean build artifacts
-clean:
-	@echo "Cleaning..."
-	find . -name "*.log" -delete
-	find . -name "*.tmp" -delete
-	@echo "✅ Cleaned"
-
-# Run tests
-test:
-	@echo "Running tests..."
-	@# Test Google tools
-	@if command -v google-check >/dev/null 2>&1; then \
-		echo "✅ Google tools available"; \
-	else \
-		echo "❌ Google tools not found - run 'make install-google'"; \
-	fi
-	@# Test Todoist tools
-	@if command -v todoist >/dev/null 2>&1; then \
-		echo "✅ Todoist tools available"; \
-	else \
-		echo "❌ Todoist tools not found - run 'make install-todoist'"; \
-	fi
-
-# System-wide installation (requires sudo)
-install-system: PREFIX = /usr/local
-install-system: install
-	@echo "✅ Installed system-wide to /usr/local/bin"
-
-# Development setup
-dev-setup:
-	@echo "Setting up development environment..."
-	@echo "export PATH=\"$(PWD)/scripts/google/bin:$(PWD)/scripts/todoist/bin:\$$PATH\"" >> ~/.zshrc
-	@echo "✅ Added to ~/.zshrc - restart shell or run: source ~/.zshrc"
-
-# Show status
-status:
-	@echo "Tool Status:"
-	@echo "Google tools:  $(if command -v google-check >/dev/null 2>&1; then echo "✅ Installed"; else echo "❌ Not installed"; fi)"
-	@echo "Todoist tools: $(if command -v todoist >/dev/null 2>&1; then echo "✅ Installed"; else echo "❌ Not installed"; fi)"
-	@echo ""
-	@echo "Installation directories:"
-	@echo "  Binaries: $(BINDIR)"
-	@echo "  Libraries: $(LIBDIR)"
-	@echo "  Docs: $(SHAREDIR)"
+build:
+	docker-compose build
 
 start:
-	@echo "Starting cursor-agent..."
-	@bash -c 'source .env && cursor-agent --model "grok"'
+	docker-compose up -d
+	@echo "✅ Sandbox started"
+	@echo "VNC: http://localhost:6080"
+
+stop:
+	docker-compose down
+	@echo "✅ Sandbox stopped"
+
+shell:
+	docker-compose exec local-agent bash || docker-compose run --rm local-agent bash
+
+status:
+	@echo "Sandbox Status:"
+	@docker-compose ps
+	@echo ""
+	@echo "Agent Scripts:"
+	@ls -la scripts/agent/*.sh 2>/dev/null || echo "  No agent scripts yet"
+	@echo ""
+	@echo "Registry:"
+	@cat scripts/agent/registry.json 2>/dev/null | jq '.scripts | length' | xargs -I{} echo "  {} scripts registered"
+
+logs:
+	docker-compose logs -f
+
+vnc:
+	@echo "Opening VNC at http://localhost:6080"
+	@open http://localhost:6080 2>/dev/null || xdg-open http://localhost:6080 2>/dev/null || echo "Open http://localhost:6080 in browser"
+
+clean:
+	docker-compose down -v --rmi local
+	@echo "✅ Cleaned up"
+
+# Test API connectivity from sandbox
+test-apis:
+	@echo "Testing API connectivity..."
+	docker-compose run --rm local-agent bash -c '\
+		source /workspace/.env && \
+		echo "Testing Google..." && \
+		/workspace/scripts/core/google/bin/token-refresh && \
+		echo "✅ Google OK" && \
+		echo "Testing Todoist..." && \
+		/workspace/scripts/core/todoist/bin/todoist projects && \
+		echo "✅ Todoist OK"'
+
+# Create new agent script
+new-script:
+	@read -p "Script name: " name; \
+	docker-compose exec local-agent bash -c "agent-new-script $$name"

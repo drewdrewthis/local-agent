@@ -4,15 +4,33 @@
 
 set -euo pipefail
 
-# Load environment if .env exists
-if [[ -f ".env" ]]; then
-    source .env
+# Load environment if .env exists (search up directory tree)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Search for .env file starting from current directory and moving up
+current_dir="$PWD"
+while [[ "$current_dir" != "/" ]]; do
+    if [[ -f "$current_dir/.env" ]]; then
+        source "$current_dir/.env"
+        break
+    fi
+    current_dir="$(dirname "$current_dir")"
+done
+
+# If .env not found, show helpful error
+if [[ -z "${GOOGLE_CLIENT_ID:-}" ]]; then
+    echo "ERROR: .env file not found. Please run this script from the project root directory." >&2
+    echo "The .env file should be in the same directory as the main project files." >&2
+    exit 1
 fi
 
 # Configuration
-readonly TOKEN_CACHE_FILE="${GOOGLE_TOKEN_CACHE:-/tmp/google_tokens.cache}"
-readonly TOKEN_EXPIRY_BUFFER=300  # 5 minutes buffer before expiry
-readonly MAX_RETRY_ATTEMPTS=3
+# Set defaults only if not already set
+[[ -z "${TOKEN_EXPIRY_BUFFER:-}" ]] && TOKEN_EXPIRY_BUFFER=300  # 5 minutes buffer before expiry
+[[ -z "${MAX_RETRY_ATTEMPTS:-}" ]] && MAX_RETRY_ATTEMPTS=3
+
+# Token cache file (not readonly to allow override)
+TOKEN_CACHE_FILE="${GOOGLE_TOKEN_CACHE:-/tmp/google_tokens.cache}"
 
 # Logging
 log_info() { echo "[$(date +'%Y-%m-%d %H:%M:%S')] INFO: $*" >&2; }

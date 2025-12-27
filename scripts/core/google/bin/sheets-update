@@ -1,0 +1,95 @@
+#!/bin/bash
+
+# Google Sheets Update Script
+# Updates the Marseille housing spreadsheet with data from La Carte des Colocs
+#
+# IMPORTANT: Run from project root (where .env file is located)
+# Usage: ./scripts/google/bin/sheets-update [populate|read]
+# Example: ./scripts/google/bin/sheets-update populate
+
+set -euo pipefail
+
+# Setup environment
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LIB_DIR="$SCRIPT_DIR/../lib"
+source "$LIB_DIR/utils.sh"
+source "$LIB_DIR/auth.sh"
+source "$LIB_DIR/sheets.sh"
+
+# Verify we're in the right directory
+if [[ ! -f ".env" ]]; then
+    echo "ERROR: .env file not found in current directory."
+    echo "Please run this script from the project root directory (where .env is located)."
+    echo "Example: ./scripts/google/bin/sheets-update"
+    exit 1
+fi
+
+setup_environment
+
+# Spreadsheet ID
+SPREADSHEET_ID="1QYXsOTnYDSENkbYN9f5YzuQ8CE6BleWEpnRWIRsXvaA"
+SHEET_NAME="Sheet1"
+
+# Function to populate housing data
+populate_housing_data() {
+    log_info "Starting housing data population..."
+
+    # Ensure we have a valid token
+    ensure_valid_token
+
+    # Housing data from La Carte des Colocs conversations
+    # Format: name, location, status, occupants, prices, apartment_size, room_size, phone, notes
+    local housing_data='{
+        "values": [
+            ["Name", "Location", "Status", "Occupants", "Price", "Apartment Size", "Room Size", "Phone", "Notes"],
+            ["Jason", "Rue de Smyrne, Marseille", "Replied", "2", "400€", "70 m²", "", "04 91 47 05 50", "5-bedroom flat, FLATSHARING, Available, likes sport/cooking/discussion"],
+            ["Anne", "Place Alexandre Labadie, Marseille", "Replied", "7", "675€", "320 m²", "", "", "10-bedroom flat, FLATSHARING, Available, can visit apartment"],
+            ["Gilles", "Rue Saint Pierre, Marseille (5e)", "Replied", "1", "600€ (all inclusive)", "100 m²", "Furnished room with double bed", "", "HOMESTAY, Available from 01/01/2026, south-facing balcony, near universities, tram/metro"],
+            ["Lola", "Boulevard Demandolx, Marseille", "Replied", "2", "490€", "70 m²", "", "", "4-bedroom house, FLATSHARING, Family colocation with mom, child, Colombians, student, cat"],
+            ["Pierre", "Boulevard De La Liberté, Marseille", "Replied", "3", "420€", "118 m²", "", "", "5-bedroom flat, HOMESTAY, Deactivated - no longer available"]
+        ]
+    }'
+
+    # Update the sheet with housing data
+    local range="${SHEET_NAME}!A1:I6"
+    log_info "Updating sheet range: $range"
+
+    local response
+    response=$(sheets_update_values "$SPREADSHEET_ID" "$range" "$housing_data")
+
+    if [ $? -eq 0 ]; then
+        log_info "Successfully updated housing data in spreadsheet"
+        echo "$response" | jq -r '.updatedRange // "Update completed"'
+    else
+        log_error "Failed to update spreadsheet"
+        echo "$response"
+        return 1
+    fi
+}
+
+# Main function
+main() {
+    local action="${1:-populate}"
+
+    case "$action" in
+        "populate")
+            populate_housing_data
+            ;;
+        "read")
+            # Read current sheet data
+            ensure_valid_token
+            local range="${SHEET_NAME}!A1:Z100"
+            local response
+            response=$(sheets_get_values "$SPREADSHEET_ID" "$range")
+            echo "$response" | jq '.'
+            ;;
+        *)
+            log_error "Unknown action: $action"
+            echo "Usage: $0 [populate|read]"
+            return 1
+            ;;
+    esac
+}
+
+# Run main function with all arguments
+main "$@"

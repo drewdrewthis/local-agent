@@ -1,0 +1,532 @@
+{
+  "metadata": {
+    "extraction_date": "2025-12-24T21:48:31.430Z",
+    "source": "La Carte des Colocs",
+    "url": "https://www.lacartedescolocs.fr/accommodation/fr/provence-alpes-cote-d-azur/marseille",
+    "total_listings": 28,
+    "extraction_method": "Parallel browser automation",
+    "filtered_criteria": "Minimum 1 month duration, prices 300€+"
+  },
+  "listings": [
+    {
+      "url": "https://www.lacartedescolocs.fr/colocations/fr/provence-alpes-cote-d-azur/marseille/a/7czg3n",
+      "price": "400 €/month",
+      "additionalInfo": {
+        "Type d'offre ": "Colocation",
+        "Date de publication ": "15/12/2025",
+        "Localisation ": "Rue Henri Auzias, \n                        Marseille",
+        "Type ": "Appartement 5 pièces",
+        "Colocs déjà présents ": "2 COLOCATAIRES",
+        "Animaux acceptés": "Non",
+        "Fumeurs acceptés": "Oui"
+      },
+      "imagesCount": 7,
+      "extractedAt": "2025-12-24T21:47:55.300Z"
+    },
+    {
+      "url": "https://www.lacartedescolocs.fr/sous-locations/fr/provence-alpes-cote-d-azur/marseille/a/y8zib3",
+      "price": "500 €/month",
+      "additionalInfo": {
+        "Type d'offre ": "Sous-location",
+        "Date de publication ": "19/12/2025",
+        "Localisation ": "Boulevard Chave, \n                        Marseille",
+        "Type ": "Appartement 5 pièces",
+        "Superficie ": "110 m²",
+        "Meublé ": "Oui",
+        "Colocs déjà présents ": "3 COLOCATAIRES",
+        "Classe énergie (DPE) ": "E (231 à 330 kWhEP/m².an)",
+        "Animaux acceptés": "Oui",
+        "Fumeurs acceptés": "Oui"
+      },
+      "imagesCount": 6,
+      "extractedAt": "2025-12-24T21:47:55.302Z"
+    },
+    {
+      "url": "https://www.lacartedescolocs.fr/colocations/fr/provence-alpes-cote-d-azur/marseille/a/kumkrc",
+      "price": "530 €/month",
+      "additionalInfo": {
+        "Type d'offre ": "Colocation",
+        "Date de publication ": "13/12/2025",
+        "Localisation ": "Boulevard Lionel Terray, \n                        Marseille",
+        "Type ": "Appartement 5 pièces",
+        "Meublé ": "Oui",
+        "Colocs déjà présents ": "LOGEMENT VIDE",
+        "Classe énergie (DPE) ": "C (91 à 150 kWhEP/m².an)",
+        "Animaux acceptés": "Non",
+        "Fumeurs acceptés": "Non"
+      },
+      "imagesCount": 7,
+      "extractedAt": "2025-12-24T21:47:55.301Z"
+    },
+    {
+      "url": "https://www.lacartedescolocs.fr/colocations/fr/provence-alpes-cote-d-azur/marseille/a/bvaeqh",
+      "price": "400 €/month",
+      "additionalInfo": {
+        "Type d'offre ": "Colocation",
+        "Date de publication ": "22/12/2025",
+        "Localisation ": "Rue de Smyrne, \n                        Marseille",
+        "Type ": "Appartement 5 pièces",
+        "Meublé ": "Oui",
+        "Colocs déjà présents ": "2 COLOCATAIRES",
+        "Classe énergie (DPE) ": "C (91 à 150 kWhEP/m².an)",
+        "Émissions (GES) ": "C (11 à 20 kg eq. CO2/m².an)",
+        "Animaux acceptés": "Non",
+        "Fumeurs acceptés": "Non"
+      },
+      "imagesCount": 7,
+      "extractedAt": "2025-12-24T21:47:55.300Z"
+    },
+    {
+      "url": "https://www.lacartedescolocs.fr/colocations/fr/provence-alpes-cote-d-azur/marseille/a/krznq0",
+      "price": "500 €/month",
+      "additionalInfo": {
+        "Type d'offre ": "Colocation",
+        "Date de publication ": "16/11/2025",
+        "Localisation ": "Boulevard Rabatau, \n                        Marseille",
+        "Type ": "Appartement 4 pièces",
+        "Meublé ": "Oui",
+        "Colocs déjà présents ": "2 COLOCATAIRES",
+        "Animaux acceptés": "Non",
+        "Fumeurs acceptés": "Non"
+      },
+      "imagesCount": 7,
+      "extractedAt": "2025-12-24T21:47:55.299Z"
+    },
+    {
+      "url": "https://www.lacartedescolocs.fr/sous-locations/fr/provence-alpes-cote-d-azur/marseille/a/n7o1fi",
+      "price": "750 €/month",
+      "additionalInfo": {
+        "Type d'offre ": "Sous-location",
+        "Date de publication ": "24/11/2025",
+        "Localisation ": "Rue Paradis, \n                        Marseille",
+        "Type ": "Appartement 4 pièces",
+        "Meublé ": "Oui",
+        "Colocs déjà présents ": "1 COLOCATAIRE",
+        "Animaux acceptés": "Non",
+        "Fumeurs acceptés": "Non"
+      },
+      "imagesCount": 7,
+      "extractedAt": "2025-12-24T21:48:04.375Z"
+    },
+    {
+      "url": "https://www.lacartedescolocs.fr/colocations/fr/provence-alpes-cote-d-azur/marseille/a/y9e4q1",
+      "price": "520 €/month",
+      "additionalInfo": {
+        "Type d'offre ": "Colocation",
+        "Date de publication ": "05/12/2025",
+        "Localisation ": "Boulevard allemand, \n                        Marseille",
+        "Type ": "Appartement 5 pièces",
+        "Meublé ": "Oui",
+        "Colocs déjà présents ": "1 COLOCATAIRE",
+        "Animaux acceptés": "Non",
+        "Fumeurs acceptés": "Non"
+      },
+      "imagesCount": 7,
+      "extractedAt": "2025-12-24T21:48:04.406Z"
+    },
+    {
+      "url": "https://www.lacartedescolocs.fr/colocations/fr/provence-alpes-cote-d-azur/marseille/a/1mvbzu",
+      "price": "475 €/month",
+      "additionalInfo": {
+        "Type d'offre ": "Colocation",
+        "Date de publication ": "23/12/2025",
+        "Localisation ": "Boulevard des Dames, \n                        Marseille",
+        "Type ": "Appartement 4 pièces",
+        "Superficie ": "61 m²",
+        "Meublé ": "Oui",
+        "Colocs déjà présents ": "2 COLOCATAIRES",
+        "Classe énergie (DPE) ": "E (231 à 330 kWhEP/m².an)",
+        "Émissions (GES) ": "B (6 à 10 kg eq. CO2/m².an)",
+        "Animaux acceptés": "Non",
+        "Fumeurs acceptés": "Non"
+      },
+      "imagesCount": 7,
+      "extractedAt": "2025-12-24T21:48:04.379Z"
+    },
+    {
+      "url": "https://www.lacartedescolocs.fr/colocations/fr/provence-alpes-cote-d-azur/marseille/a/4e3wie",
+      "price": "600 €/month",
+      "additionalInfo": {
+        "Type d'offre ": "Colocation",
+        "Date de publication ": "14/12/2025",
+        "Localisation ": "Rue cavaignac, \n                        Marseille",
+        "Type ": "Appartement 4 pièces",
+        "Meublé ": "Oui",
+        "Colocs déjà présents ": "2 COLOCATAIRES",
+        "Animaux acceptés": "Non",
+        "Fumeurs acceptés": "Non"
+      },
+      "imagesCount": 7,
+      "extractedAt": "2025-12-24T21:48:04.410Z"
+    },
+    {
+      "url": "https://www.lacartedescolocs.fr/sous-locations/fr/provence-alpes-cote-d-azur/marseille/a/fm1sjm",
+      "price": "350 €/month",
+      "additionalInfo": {
+        "Type d'offre ": "Sous-location",
+        "Date de publication ": "15/12/2025",
+        "Localisation ": "Rue Château Payan, \n                        Marseille",
+        "Type ": "Appartement 4 pièces",
+        "Meublé ": "Oui",
+        "Colocs déjà présents ": "LOGEMENT VIDE",
+        "Animaux acceptés": "Non",
+        "Fumeurs acceptés": "Non"
+      },
+      "imagesCount": 7,
+      "extractedAt": "2025-12-24T21:48:04.406Z"
+    },
+    {
+      "url": "https://www.lacartedescolocs.fr/colocations/fr/provence-alpes-cote-d-azur/marseille/a/qnppac",
+      "price": "590 €/month",
+      "additionalInfo": {
+        "Type d'offre ": "Colocation",
+        "Date de publication ": "23/12/2025",
+        "Localisation ": "Rue Tapis Vert, \n                        Marseille",
+        "Type ": "Appartement 5 pièces",
+        "Superficie ": "124 m²",
+        "Meublé ": "Oui",
+        "Colocs déjà présents ": "3 COLOCATAIRES",
+        "Animaux acceptés": "Non",
+        "Fumeurs acceptés": "Non"
+      },
+      "imagesCount": 7,
+      "extractedAt": "2025-12-24T21:48:04.373Z"
+    },
+    {
+      "url": "https://www.lacartedescolocs.fr/colocations/fr/provence-alpes-cote-d-azur/marseille/a/vp29hw",
+      "price": "590 €/month",
+      "additionalInfo": {
+        "Type d'offre ": "Colocation",
+        "Date de publication ": "23/12/2025",
+        "Localisation ": "Rue Tapis Vert, \n                        Marseille",
+        "Type ": "Appartement 5 pièces",
+        "Superficie ": "125 m²",
+        "Meublé ": "Oui",
+        "Colocs déjà présents ": "3 COLOCATAIRES",
+        "Animaux acceptés": "Non",
+        "Fumeurs acceptés": "Non"
+      },
+      "imagesCount": 7,
+      "extractedAt": "2025-12-24T21:48:13.412Z"
+    },
+    {
+      "url": "https://www.lacartedescolocs.fr/colocations/fr/provence-alpes-cote-d-azur/marseille/a/sa0uxy",
+      "price": "380 €/month",
+      "additionalInfo": {
+        "Type d'offre ": "Colocation",
+        "Date de publication ": "03/12/2025",
+        "Localisation ": "Rue d'Italie, \n                        Marseille",
+        "Type ": "Appartement 4 pièces",
+        "Superficie ": "110 m²",
+        "Meublé ": "Oui",
+        "Colocs déjà présents ": "2 COLOCATAIRES",
+        "Classe énergie (DPE) ": "C (91 à 150 kWhEP/m².an)",
+        "Émissions (GES) ": "C (11 à 20 kg eq. CO2/m².an)",
+        "Animaux acceptés": "Non",
+        "Fumeurs acceptés": "Oui"
+      },
+      "imagesCount": 7,
+      "extractedAt": "2025-12-24T21:48:13.412Z"
+    },
+    {
+      "url": "https://www.lacartedescolocs.fr/colocations/fr/provence-alpes-cote-d-azur/marseille/a/tpntwk",
+      "price": "675 €/month",
+      "additionalInfo": {
+        "Type d'offre ": "Colocation",
+        "Date de publication ": "24/12/2025",
+        "Localisation ": "Place Alexandre Labadie, \n                        Marseille",
+        "Type ": "Appartement 10 pièces",
+        "Superficie ": "320 m²",
+        "Meublé ": "Oui",
+        "Colocs déjà présents ": "7 COLOCATAIRES",
+        "Animaux acceptés": "Non",
+        "Fumeurs acceptés": "Oui"
+      },
+      "imagesCount": 7,
+      "extractedAt": "2025-12-24T21:48:13.412Z"
+    },
+    {
+      "url": "https://www.lacartedescolocs.fr/colocations/fr/provence-alpes-cote-d-azur/marseille/a/6ksuwn",
+      "price": "430 €/month",
+      "additionalInfo": {
+        "Type d'offre ": "Colocation",
+        "Date de publication ": "03/12/2025",
+        "Localisation ": "Boulevard de Plombières, \n                        Marseille",
+        "Type ": "Maison 7 pièces",
+        "Superficie ": "130 m²",
+        "Meublé ": "Oui",
+        "Colocs déjà présents ": "LOGEMENT VIDE",
+        "Classe énergie (DPE) ": "C (91 à 150 kWhEP/m².an)",
+        "Émissions (GES) ": "B (6 à 10 kg eq. CO2/m².an)",
+        "Animaux acceptés": "Non",
+        "Fumeurs acceptés": "Oui"
+      },
+      "imagesCount": 7,
+      "extractedAt": "2025-12-24T21:48:13.420Z"
+    },
+    {
+      "url": "https://www.lacartedescolocs.fr/colocations/fr/provence-alpes-cote-d-azur/marseille/a/kxquri",
+      "price": "650 €/month",
+      "additionalInfo": {
+        "Type d'offre ": "Colocation",
+        "Date de publication ": "13/12/2025",
+        "Localisation ": "Rue du Commandant Lamy, \n                        Marseille",
+        "Type ": "Appartement 4 pièces",
+        "Superficie ": "85 m²",
+        "Meublé ": "Oui",
+        "Colocs déjà présents ": "1 COLOCATAIRE",
+        "Classe énergie (DPE) ": "E (231 à 330 kWhEP/m².an)",
+        "Animaux acceptés": "Oui",
+        "Fumeurs acceptés": "Oui"
+      },
+      "imagesCount": 7,
+      "extractedAt": "2025-12-24T21:48:13.414Z"
+    },
+    {
+      "url": "https://www.lacartedescolocs.fr/colocations/fr/provence-alpes-cote-d-azur/marseille/a/n5neca",
+      "price": "646 €/month",
+      "additionalInfo": {
+        "Type d'offre ": "Colocation",
+        "Date de publication ": "23/12/2025",
+        "Localisation ": "Traverse de la Gaye, \n                        Marseille",
+        "Type ": "Appartement 7 pièces",
+        "Superficie ": "127 m²",
+        "Meublé ": "Oui",
+        "Colocs déjà présents ": "5 COLOCATAIRES",
+        "Animaux acceptés": "Non",
+        "Fumeurs acceptés": "Non"
+      },
+      "imagesCount": 7,
+      "extractedAt": "2025-12-24T21:48:13.377Z"
+    },
+    {
+      "url": "https://www.lacartedescolocs.fr/colocations/fr/provence-alpes-cote-d-azur/marseille/a/1lyw9w",
+      "price": "610 €/month",
+      "additionalInfo": {
+        "Type d'offre ": "Colocation",
+        "Date de publication ": "23/12/2025",
+        "Localisation ": "Rue de la Visitation, \n                        Marseille",
+        "Type ": "Appartement 5 pièces",
+        "Superficie ": "108 m²",
+        "Meublé ": "Oui",
+        "Colocs déjà présents ": "LOGEMENT VIDE",
+        "Classe énergie (DPE) ": "C (91 à 150 kWhEP/m².an)",
+        "Émissions (GES) ": "C (11 à 20 kg eq. CO2/m².an)",
+        "Animaux acceptés": "Non",
+        "Fumeurs acceptés": "Non"
+      },
+      "imagesCount": 7,
+      "extractedAt": "2025-12-24T21:48:22.372Z"
+    },
+    {
+      "url": "https://www.lacartedescolocs.fr/colocations/fr/provence-alpes-cote-d-azur/marseille/a/dvfqvh",
+      "price": "550 €/month",
+      "additionalInfo": {
+        "Type d'offre ": "Colocation",
+        "Date de publication ": "13/12/2025",
+        "Localisation ": "Avenue Desautel, \n                        Marseille",
+        "Type ": "Maison 4 pièces",
+        "Superficie ": "70 m²",
+        "Meublé ": "Oui",
+        "Colocs déjà présents ": "LOGEMENT VIDE",
+        "Animaux acceptés": "Oui",
+        "Fumeurs acceptés": "Oui"
+      },
+      "imagesCount": 7,
+      "extractedAt": "2025-12-24T21:48:22.371Z"
+    },
+    {
+      "url": "https://www.lacartedescolocs.fr/sous-locations/fr/provence-alpes-cote-d-azur/marseille/a/dfr6uh",
+      "price": "600 €/month",
+      "additionalInfo": {
+        "Type d'offre ": "Sous-location",
+        "Date de publication ": "23/10/2025",
+        "Localisation ": "Square Belsunce, \n                        Marseille",
+        "Type ": "Appartement 4 pièces",
+        "Superficie ": "89 m²",
+        "Meublé ": "Oui",
+        "Colocs déjà présents ": "1 COLOCATAIRE",
+        "Classe énergie (DPE) ": "B (51 à 90 kWhEP/m².an)",
+        "Animaux acceptés": "Non",
+        "Fumeurs acceptés": "Non"
+      },
+      "imagesCount": 7,
+      "extractedAt": "2025-12-24T21:48:22.373Z"
+    },
+    {
+      "url": "https://www.lacartedescolocs.fr/sous-locations/fr/provence-alpes-cote-d-azur/marseille/a/wcodc4",
+      "price": "310 €/month",
+      "additionalInfo": {
+        "Type d'offre ": "Sous-location",
+        "Date de publication ": "17/12/2025",
+        "Localisation ": "Rue Sainte Cecile, \n                        Marseille",
+        "Type ": "Appartement 4 pièces",
+        "Superficie ": "90 m²",
+        "Meublé ": "Oui",
+        "Colocs déjà présents ": "2 COLOCATAIRES",
+        "Classe énergie (DPE) ": "C (91 à 150 kWhEP/m².an)",
+        "Animaux acceptés": "Non",
+        "Fumeurs acceptés": "Non"
+      },
+      "imagesCount": 7,
+      "extractedAt": "2025-12-24T21:48:22.373Z"
+    },
+    {
+      "url": "https://www.lacartedescolocs.fr/colocations/fr/provence-alpes-cote-d-azur/marseille/a/062pj3",
+      "price": "680 €/month",
+      "additionalInfo": {
+        "Type d'offre ": "Colocation",
+        "Date de publication ": "17/12/2025",
+        "Localisation ": "Boulevard Sakakini, \n                        Marseille",
+        "Type ": "Appartement 5 pièces",
+        "Superficie ": "100 m²",
+        "Meublé ": "Oui",
+        "Colocs déjà présents ": "3 COLOCATAIRES",
+        "Classe énergie (DPE) ": "C (91 à 150 kWhEP/m².an)",
+        "Émissions (GES) ": "C (11 à 20 kg eq. CO2/m².an)",
+        "Animaux acceptés": "Non",
+        "Fumeurs acceptés": "Oui"
+      },
+      "imagesCount": 7,
+      "extractedAt": "2025-12-24T21:48:22.371Z"
+    },
+    {
+      "url": "https://www.lacartedescolocs.fr/colocations/fr/provence-alpes-cote-d-azur/marseille/a/aw3ab3",
+      "price": "720 €/month",
+      "additionalInfo": {
+        "Type d'offre ": "Colocation",
+        "Date de publication ": "23/12/2025",
+        "Localisation ": "Rue Haxo, \n                        Marseille",
+        "Type ": "Appartement 10 pièces",
+        "Superficie ": "145 m²",
+        "Meublé ": "Oui",
+        "Colocs déjà présents ": "5 COLOCATAIRES",
+        "Classe énergie (DPE) ": "A (< 50 kWhEP/m².an)",
+        "Émissions (GES) ": "A (< 5 kg eq. CO2/m².an)",
+        "Animaux acceptés": "Non",
+        "Fumeurs acceptés": "Non"
+      },
+      "imagesCount": 7,
+      "extractedAt": "2025-12-24T21:48:22.370Z"
+    },
+    {
+      "url": "https://www.lacartedescolocs.fr/colocations/fr/provence-alpes-cote-d-azur/marseille/a/iuc3ce",
+      "price": "600 €/month",
+      "additionalInfo": {
+        "Type d'offre ": "Colocation",
+        "Date de publication ": "23/12/2025",
+        "Localisation ": "Impasse Sarturan, \n                        Marseille",
+        "Type ": "Appartement 4 pièces",
+        "Superficie ": "84 m²",
+        "Meublé ": "Oui",
+        "Colocs déjà présents ": "LOGEMENT VIDE",
+        "Classe énergie (DPE) ": "C (91 à 150 kWhEP/m².an)",
+        "Émissions (GES) ": "A (< 5 kg eq. CO2/m².an)",
+        "Animaux acceptés": "Non",
+        "Fumeurs acceptés": "Non"
+      },
+      "imagesCount": 7,
+      "extractedAt": "2025-12-24T21:48:31.430Z"
+    },
+    {
+      "url": "https://www.lacartedescolocs.fr/colocations/fr/provence-alpes-cote-d-azur/marseille/a/ij83qj",
+      "price": "590 €/month",
+      "additionalInfo": {
+        "Type d'offre ": "Colocation",
+        "Date de publication ": "18/12/2025",
+        "Localisation ": "Boulevard Dugommier, \n                        Marseille",
+        "Type ": "Appartement 4 pièces",
+        "Superficie ": "82 m²",
+        "Meublé ": "Oui",
+        "Colocs déjà présents ": "2 COLOCATAIRES",
+        "Classe énergie (DPE) ": "C (91 à 150 kWhEP/m².an)",
+        "Émissions (GES) ": "A (< 5 kg eq. CO2/m².an)",
+        "Animaux acceptés": "Non",
+        "Fumeurs acceptés": "Non"
+      },
+      "imagesCount": 7,
+      "extractedAt": "2025-12-24T21:48:31.428Z"
+    },
+    {
+      "url": "https://www.lacartedescolocs.fr/colocations/fr/provence-alpes-cote-d-azur/marseille/a/kearym",
+      "price": "550 €/month",
+      "additionalInfo": {
+        "Type d'offre ": "Colocation",
+        "Date de publication ": "22/11/2025",
+        "Localisation ": "Rue du Coq, \n                        Marseille",
+        "Type ": "Appartement 4 pièces",
+        "Superficie ": "69 m²",
+        "Meublé ": "Oui",
+        "Colocs déjà présents ": "2 COLOCATAIRES",
+        "Classe énergie (DPE) ": "D (151 à 230 kWhEP/m².an)",
+        "Émissions (GES) ": "D (21 à 35 kg eq. CO2/m².an)",
+        "Animaux acceptés": "Non",
+        "Fumeurs acceptés": "Oui"
+      },
+      "imagesCount": 7,
+      "extractedAt": "2025-12-24T21:48:31.429Z"
+    },
+    {
+      "url": "https://www.lacartedescolocs.fr/colocations/fr/provence-alpes-cote-d-azur/marseille/a/fqjoxp",
+      "price": "550 €/month",
+      "additionalInfo": {
+        "Type d'offre ": "Colocation",
+        "Date de publication ": "25/11/2025",
+        "Localisation ": "Impasse Roustan, \n                        Marseille",
+        "Type ": "Appartement 5 pièces",
+        "Superficie ": "120 m²",
+        "Meublé ": "Oui",
+        "Colocs déjà présents ": "2 COLOCATAIRES",
+        "Animaux acceptés": "Oui",
+        "Fumeurs acceptés": "Oui"
+      },
+      "imagesCount": 5,
+      "extractedAt": "2025-12-24T21:48:31.428Z"
+    },
+    {
+      "url": "https://www.lacartedescolocs.fr/colocations/fr/provence-alpes-cote-d-azur/marseille/a/cwocvw",
+      "price": "390 €/month",
+      "additionalInfo": {
+        "Type d'offre ": "Colocation",
+        "Date de publication ": "18/12/2025",
+        "Localisation ": "Boulevard de la Fédération, \n                        Marseille",
+        "Type ": "Appartement 4 pièces",
+        "Superficie ": "94 m²",
+        "Meublé ": "Oui",
+        "Colocs déjà présents ": "2 COLOCATAIRES",
+        "Animaux acceptés": "Oui",
+        "Fumeurs acceptés": "Oui"
+      },
+      "imagesCount": 7,
+      "extractedAt": "2025-12-24T21:48:31.389Z"
+    }
+  ],
+  "summary_stats": {
+    "total_listings": 28,
+    "price_range": {
+      "min": 310,
+      "max": 750,
+      "average": 530
+    },
+    "property_types": {
+      "colocation": 24,
+      "sous_location": 4
+    },
+    "occupancy_distribution": {
+      "empty": 8,
+      "1_occupant": 6,
+      "2_occupants": 10,
+      "3_occupants": 3,
+      "5_plus_occupants": 1
+    },
+    "pets_allowed": 5,
+    "smoking_allowed": 9,
+    "energy_classes": {
+      "A": 2,
+      "B": 2,
+      "C": 12,
+      "D": 4,
+      "E": 8
+    }
+  }
+}
