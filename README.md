@@ -1,57 +1,40 @@
-# Clara Gemmastone Agent
+# Clara Sandbox
 
-Autonomous agent running in a sandboxed Docker environment with headed browser access.
+Sandboxed environment for cursor-cli autonomous coding agent.
 
-## Architecture
+## What This Is
+
+This repo **is the workspace** for cursor-cli. The agent:
+- Runs inside this Docker container
+- Has full filesystem access (within container)
+- Writes and maintains its own scripts
+- Commits and pushes changes to evolve itself
+- Uses Playwright MCP for headed browser automation
+- Accesses Google/Todoist APIs via bash scripts it maintains
+
+## Structure
 
 ```
-local-agent/           ← This repo (mounted into container)
-├── AGENTS.md          # Agent identity and rules
+├── AGENTS.md          # Agent identity (Clara Gemmastone)
 ├── RULES.md           # Operational boundaries
-├── scripts/
-│   ├── core/          # Human-maintained API scripts
-│   │   ├── google/    # Gmail, Calendar, Sheets, Drive
-│   │   └── todoist/   # Task management
-│   └── agent/         # Agent-written scripts (self-modifying)
-│       └── registry.json
+├── scripts/           # Agent-maintained automation
+│   ├── google/        # Gmail, Calendar, Sheets, Drive APIs
+│   ├── todoist/       # Task management API
+│   └── custom/        # Any scripts agent creates
 └── agent-notes/       # Agent knowledge base
 ```
 
-## Container Capabilities
-
-- **Playwright headed browser** via VNC (port 6080)
-- **Google APIs**: Gmail, Calendar, Sheets, Drive
-- **Todoist API**: Task management
-- **Git write access**: Agent can commit/push to this repo
-- **Self-modifying scripts**: Agent maintains `scripts/agent/`
-
-## Usage
+## Running
 
 ```bash
-# Build and start
-make build
-make start
-
-# Access VNC browser
-open http://localhost:6080
-
-# Shell into container
-make shell
-
-# Test API connectivity
-make test-apis
+make build    # Build container
+make start    # Start (VNC at http://localhost:6080)
+make shell    # Shell into container
 ```
-
-## Agent Script Convention
-
-Scripts in `scripts/agent/` must:
-1. Have header comments with purpose/usage
-2. Be registered in `registry.json`
-3. Use APIs first, browser as fallback
 
 ## Environment
 
-Create `.env` with:
+`.env` contains API credentials (not committed):
 ```
 GOOGLE_CLIENT_ID=...
 GOOGLE_CLIENT_SECRET=...
@@ -59,3 +42,9 @@ GOOGLE_REFRESH_TOKEN=...
 TODOIST_TOKEN=...
 ```
 
+## Agent Capabilities
+
+- **Browser**: Playwright headed via VNC (port 6080)
+- **APIs**: Google (Gmail, Calendar, Sheets, Drive), Todoist
+- **Git**: Full commit/push access to this repo
+- **Scripts**: Creates and maintains bash automation
