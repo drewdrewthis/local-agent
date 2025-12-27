@@ -5,6 +5,7 @@ Sandboxed environment for cursor-cli autonomous coding agent.
 ## What This Is
 
 This repo **is the workspace** for cursor-cli. The agent:
+
 - Runs inside this Docker container
 - Has full filesystem access (within container)
 - Writes and maintains its own scripts
@@ -35,6 +36,7 @@ make shell    # Shell into container
 ## Environment
 
 `.env` contains API credentials (not committed):
+
 ```
 GOOGLE_CLIENT_ID=...
 GOOGLE_CLIENT_SECRET=...

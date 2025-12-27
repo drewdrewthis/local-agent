@@ -10,7 +10,6 @@ logs/
 
 # Editor
 .specstory/
-.cursor/
 
 # Temp
 *.tmp
