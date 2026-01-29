@@ -1,5 +1,8 @@
-# Secrets
+# Secrets (unencrypted - use scripts/secrets/encrypt to create encrypted versions)
 .env
+agent-notes/life-context.md
+
+# Encrypted secrets are tracked (secrets/*.age)
 
 # Logs
 *.log
