@@ -1,8 +1,10 @@
-# Secrets (unencrypted - use scripts/secrets/encrypt to create encrypted versions)
+# Unencrypted sensitive files (use scripts/secrets/encrypt to create encrypted versions)
 .env
-agent-notes/life-context.md
+.vault/context.md
+.vault/docs/budget-tracking.md
+.vault/docs/projects/storysnacks.md
 
-# Encrypted secrets are tracked (secrets/*.age)
+# Only *.age files in .vault/ are tracked
 
 # Logs
 *.log
