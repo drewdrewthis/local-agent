@@ -11,6 +11,7 @@ set -euo pipefail
 
 # Setup environment
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
 LIB_DIR="$SCRIPT_DIR/../lib"
 source "$LIB_DIR/utils.sh"
 source "$LIB_DIR/auth.sh"
@@ -37,21 +38,21 @@ populate_housing_data() {
     # Ensure we have a valid token
     ensure_valid_token
 
-    # Housing data from La Carte des Colocs conversations
-    # Format: name, location, status, occupants, prices, apartment_size, room_size, phone, notes
-    local housing_data='{
-        "values": [
-            ["Name", "Location", "Status", "Occupants", "Price", "Apartment Size", "Room Size", "Phone", "Notes"],
-            ["Jason", "Rue de Smyrne, Marseille", "Replied", "2", "400€", "70 m²", "", "04 91 47 05 50", "5-bedroom flat, FLATSHARING, Available, likes sport/cooking/discussion"],
-            ["Anne", "Place Alexandre Labadie, Marseille", "Replied", "7", "675€", "320 m²", "", "", "10-bedroom flat, FLATSHARING, Available, can visit apartment"],
-            ["Gilles", "Rue Saint Pierre, Marseille (5e)", "Replied", "1", "600€ (all inclusive)", "100 m²", "Furnished room with double bed", "", "HOMESTAY, Available from 01/01/2026, south-facing balcony, near universities, tram/metro"],
-            ["Lola", "Boulevard Demandolx, Marseille", "Replied", "2", "490€", "70 m²", "", "", "4-bedroom house, FLATSHARING, Family colocation with mom, child, Colombians, student, cat"],
-            ["Pierre", "Boulevard De La Liberté, Marseille", "Replied", "3", "420€", "118 m²", "", "", "5-bedroom flat, HOMESTAY, Deactivated - no longer available"]
-        ]
-    }'
+    # Housing data lives in vault (encrypted)
+    local data_file="$PROJECT_ROOT/.vault/data/housing.json"
+    if [[ ! -f "$data_file" ]]; then
+        log_error "Housing data not found: $data_file"
+        log_error "Run ./scripts/secrets/decrypt first"
+        return 1
+    fi
+
+    local housing_data
+    housing_data=$(cat "$data_file")
+    local row_count
+    row_count=$(echo "$housing_data" | jq '.values | length')
 
     # Update the sheet with housing data
-    local range="${SHEET_NAME}!A1:I6"
+    local range="${SHEET_NAME}!A1:P${row_count}"
     log_info "Updating sheet range: $range"
 
     local response
