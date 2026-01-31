@@ -1,10 +1,9 @@
-# Unencrypted sensitive files (use scripts/secrets/encrypt to create encrypted versions)
+# Sensitive files - decrypted versions (use scripts/secrets/encrypt)
 .env
-.vault/context.md
-.vault/docs/budget-tracking.md
-.vault/docs/projects/storysnacks.md
+.vault/
 
-# Only *.age files in .vault/ are tracked
+# The encrypted archive IS tracked (not ignored)
+!.vault.tar.age
 
 # Logs
 *.log
