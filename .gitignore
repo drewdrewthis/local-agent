@@ -1,6 +1,7 @@
 # Sensitive files - decrypted versions (use scripts/secrets/encrypt)
 .env
 .vault/
+agent-notes/life-context.md
 
 # The encrypted archive IS tracked (not ignored)
 !.vault.tar.age
