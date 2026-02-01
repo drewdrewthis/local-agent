@@ -10,7 +10,7 @@ source "$SCRIPT_DIR/api.sh"
 
 # Configuration
 readonly CALENDAR_API_BASE="https://www.googleapis.com/calendar/v3"
-readonly DEFAULT_CALENDAR="primary"
+readonly DEFAULT_CALENDAR="818038fcccbba275a732fa90d4c1aff3daf91e16bb2822796f988e1d3127f482@group.calendar.google.com"
 
 # Logging
 log_info() { echo "[$(date +'%Y-%m-%d %H:%M:%S')] INFO: $*" >&2; }
